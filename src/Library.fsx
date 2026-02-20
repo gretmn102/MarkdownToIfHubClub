@@ -28,6 +28,8 @@ let moveOutContentFromParagraph (markdownDocument: MarkdownDocument) =
         blocks
         |> Seq.iteri (fun i ->
             function
+            | :? QuoteBlock as quoteBlock ->
+                mapBlocks quoteBlock
             | :? ParagraphBlock as paragraphBlock ->
                 let block = RawTextBlock()
                 let inline' =
@@ -44,7 +46,7 @@ let moveOutContentFromParagraph (markdownDocument: MarkdownDocument) =
                         LiteralInline "\n"
                     )
                 block.Inline <- inline'
-                markdownDocument[i] <- block
+                paragraphBlock.Parent[i] <- block
             | _ -> ()
         )
     mapBlocks markdownDocument

@@ -53,6 +53,21 @@ let convertTests =
                     ""
                 ])
                 ""
+        testCase "moveOutContentFromParagraph: in blocks" <| fun () ->
+            Expect.equal
+                (convert (
+                    String.concat "\n" [
+                        "> hello world"
+                    ]
+                ))
+                (String.concat "\n" [
+                    "<blockquote>"
+                    "hello world"
+                    ""
+                    "</blockquote>"
+                    ""
+                ])
+                ""
     ]
 
 exit (

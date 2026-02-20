@@ -30,7 +30,20 @@ let moveOutContentFromParagraph (markdownDocument: MarkdownDocument) =
             function
             | :? ParagraphBlock as paragraphBlock ->
                 let block = RawTextBlock()
-                block.Inline <- paragraphBlock.Inline
+                let inline' =
+                    paragraphBlock.Inline.AppendChild (
+                        LineBreakInline()
+                    )
+                let inline' =
+                    inline'.AppendChild (
+                        LineBreakInline()
+                    )
+                let inline' =
+                    inline'.AppendChild (
+                        // прбовал использовать LineBreakInline(), но рендер его режет
+                        LiteralInline "\n"
+                    )
+                block.Inline <- inline'
                 markdownDocument[i] <- block
             | _ -> ()
         )

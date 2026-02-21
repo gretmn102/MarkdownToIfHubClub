@@ -1,5 +1,6 @@
 #r "nuget: Markdig, 0.45.0"
 open Markdig
+open Markdig.Helpers
 open Markdig.Syntax
 open Markdig.Syntax.Inlines
 
@@ -9,6 +10,23 @@ let shiftHeaderLevel (markdownDocument: Syntax.MarkdownDocument) =
         |> Seq.iter (function
             | :? Syntax.HeadingBlock as headingBlock ->
                 headingBlock.Level <- headingBlock.Level + 2
+            | _ -> ()
+        )
+    mapBlocks markdownDocument
+
+let truncateToCut (markdownDocument: MarkdownDocument) =
+    let rec mapBlocks (blocks: ContainerBlock) =
+        blocks
+        |> Seq.iteri (fun currentBlockIndex ->
+            function
+            | :? Syntax.HtmlBlock as htmlBlock ->
+                if htmlBlock.Type = HtmlBlockType.Comment
+                    && htmlBlock.Lines.Lines[0].Slice.IndexOf "truncate" > 0
+                then
+                    blocks[currentBlockIndex] <- new HtmlBlock (
+                        parser = null,
+                        Lines = StringLineGroup "<cut>"
+                    )
             | _ -> ()
         )
     mapBlocks markdownDocument
@@ -83,6 +101,7 @@ let private markdownPipeline =
 let convert rawMarkdown =
     let document = Markdig.Markdown.Parse(rawMarkdown, markdownPipeline)
     shiftHeaderLevel document
+    truncateToCut document
     moveOutContentFromParagraph document
     use writer = new System.IO.StringWriter()
     let render = Renderers.HtmlRenderer writer

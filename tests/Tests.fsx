@@ -28,7 +28,6 @@ let convertTests =
                     ""
                     "Next paragraph"
                     ""
-                    ""
                 ])
                 ""
         testCase "moveOutContentFromParagraph: 2" <| fun () ->
@@ -63,7 +62,6 @@ let convertTests =
                 (String.concat "\n" [
                     "<blockquote>"
                     "hello world"
-                    ""
                     "</blockquote>"
                     ""
                 ])

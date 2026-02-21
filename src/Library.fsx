@@ -24,7 +24,7 @@ type RawTextRenderer() =
             writer.Write block.Inline
 
 let moveOutContentFromParagraph (markdownDocument: MarkdownDocument) =
-    let rec mapBlocks (blocks: Syntax.Block seq) =
+    let rec mapBlocks (blocks: Syntax.ContainerBlock) =
         blocks
         |> Seq.iteri (fun i ->
             function
@@ -32,21 +32,15 @@ let moveOutContentFromParagraph (markdownDocument: MarkdownDocument) =
                 mapBlocks quoteBlock
             | :? ParagraphBlock as paragraphBlock ->
                 let block = RawTextBlock()
-                let inline' =
-                    paragraphBlock.Inline.AppendChild (
-                        LineBreakInline()
+                block.Inline <-
+                    LiteralInline (
+                        if blocks.LastChild = paragraphBlock then
+                            "\n"
+                        else
+                            "\n\n"
                     )
-                let inline' =
-                    inline'.AppendChild (
-                        LineBreakInline()
-                    )
-                let inline' =
-                    inline'.AppendChild (
-                        // прбовал использовать LineBreakInline(), но рендер его режет
-                        LiteralInline "\n"
-                    )
-                block.Inline <- inline'
-                paragraphBlock.Parent[i] <- block
+                    |> paragraphBlock.Inline.AppendChild
+                blocks[i] <- block
             | _ -> ()
         )
     mapBlocks markdownDocument

@@ -66,7 +66,7 @@ let convertTests =
                     ""
                     "Next paragraph"
                     ""
-                    "<h4 id=\"header\">Header</h4>"
+                    "<h3 id=\"header\">Header</h3>"
                     ""
                 ])
                 ""

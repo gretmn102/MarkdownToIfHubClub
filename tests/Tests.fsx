@@ -19,10 +19,10 @@ let convertTests =
                     ]
                 ))
                 (String.concat "\n" [
-                    "<h4 id=\"section\">1</h4>"
-                    "<h5 id=\"section-1\">2</h5>"
-                    "<h6 id=\"section-2\">3</h6>"
-                    "<h5 id=\"section-3\">2</h5>"
+                    "<h3 id=\"section\">1</h3>"
+                    "<h4 id=\"section-1\">2</h4>"
+                    "<h5 id=\"section-2\">3</h5>"
+                    "<h4 id=\"section-3\">2</h4>"
                     ""
                 ])
                 ""

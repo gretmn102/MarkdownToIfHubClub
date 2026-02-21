@@ -26,6 +26,18 @@ let convertTests =
                     ""
                 ])
                 ""
+        testCase "truncateToCut" <| fun () ->
+            Expect.equal
+                (convert (
+                    String.concat "\n" [
+                        "<!-- truncate -->"
+                    ]
+                ))
+                (String.concat "\n" [
+                    "<cut>"
+                    ""
+                ])
+                ""
         testCase "moveOutContentFromParagraph: 1" <| fun () ->
             Expect.equal
                 (convert (

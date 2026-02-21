@@ -8,7 +8,7 @@ let shiftHeaderLevel (markdownDocument: Syntax.MarkdownDocument) =
         blocks
         |> Seq.iter (function
             | :? Syntax.HeadingBlock as headingBlock ->
-                headingBlock.Level <- headingBlock.Level + 3
+                headingBlock.Level <- headingBlock.Level + 2
             | _ -> ()
         )
     mapBlocks markdownDocument

@@ -8,6 +8,24 @@ open Library
 [<Tests>]
 let convertTests =
     testList "convertTests" [
+        testCase "shiftHeaderLevel" <| fun () ->
+            Expect.equal
+                (convert (
+                    String.concat "\n" [
+                        "# 1"
+                        "## 2"
+                        "### 3"
+                        "## 2"
+                    ]
+                ))
+                (String.concat "\n" [
+                    "<h3 id=\"section\">1</h3>"
+                    "<h4 id=\"section-1\">2</h4>"
+                    "<h5 id=\"section-2\">3</h5>"
+                    "<h4 id=\"section-3\">2</h4>"
+                    ""
+                ])
+                ""
         testCase "moveOutContentFromParagraph: 1" <| fun () ->
             Expect.equal
                 (convert (
@@ -48,7 +66,7 @@ let convertTests =
                     ""
                     "Next paragraph"
                     ""
-                    "<h4 id=\"header\">Header</h4>"
+                    "<h3 id=\"header\">Header</h3>"
                     ""
                 ])
                 ""

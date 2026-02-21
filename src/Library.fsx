@@ -25,22 +25,29 @@ type RawTextRenderer() =
 
 let moveOutContentFromParagraph (markdownDocument: MarkdownDocument) =
     let rec mapBlocks (blocks: Syntax.ContainerBlock) =
+        let getNextBlock currentBlockIndex =
+            let nextBlockIndex = currentBlockIndex + 1
+            if not (nextBlockIndex < blocks.Count) then
+                None
+            else
+                Some blocks[nextBlockIndex]
         blocks
-        |> Seq.iteri (fun i ->
-            function
+        |> Seq.iteri (fun currentBlockIndex currentBlock ->
+            match currentBlock with
             | :? QuoteBlock as quoteBlock ->
                 mapBlocks quoteBlock
             | :? ParagraphBlock as paragraphBlock ->
                 let block = RawTextBlock()
                 block.Inline <-
                     LiteralInline (
-                        if blocks.LastChild = paragraphBlock then
-                            "\n"
-                        else
+                        match getNextBlock currentBlockIndex with
+                        | None -> "\n"
+                        | Some (:? ParagraphBlock | :? HeadingBlock) ->
                             "\n\n"
+                        | _ -> "\n"
                     )
                     |> paragraphBlock.Inline.AppendChild
-                blocks[i] <- block
+                blocks[currentBlockIndex] <- block
             | _ -> ()
         )
     mapBlocks markdownDocument

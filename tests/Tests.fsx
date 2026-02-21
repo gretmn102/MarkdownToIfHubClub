@@ -96,6 +96,36 @@ let convertTests =
                     ""
                 ])
                 ""
+        testCase "removeCodeFromPre: one line" <| fun () ->
+            Expect.equal
+                (convert (
+                    String.concat "\n" [
+                        "```"
+                        "code"
+                        "```"
+                    ]
+                ))
+                (String.concat "\n" [
+                    "<pre>code</pre>"
+                    ""
+                ])
+                ""
+        testCase "removeCodeFromPre: two line" <| fun () ->
+            Expect.equal
+                (convert (
+                    String.concat "\n" [
+                        "```"
+                        "code"
+                        "code2"
+                        "```"
+                    ]
+                ))
+                (String.concat "\n" [
+                    "<pre>code"
+                    "code2</pre>"
+                    ""
+                ])
+                ""
     ]
 
 exit (

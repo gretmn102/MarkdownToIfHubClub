@@ -70,6 +70,24 @@ let moveOutContentFromParagraph (markdownDocument: MarkdownDocument) =
         )
     mapBlocks markdownDocument
 
+let preOnlyCodeBlockRenderer (render: Renderers.HtmlRenderer) =
+    render.ObjectRenderers.RemoveAll(function
+        | :? Renderers.Html.CodeBlockRenderer -> true
+        | _ -> false
+    ) |> ignore
+
+    let preOnlyCodeBlockRenderer = {
+        new Renderers.Html.HtmlObjectRenderer<CodeBlock>() with
+            member __.Write (renderer: Renderers.HtmlRenderer, obj: CodeBlock): unit =
+                render
+                    .Write("<pre>")
+                    .WriteEscape(obj.Lines.ToString())
+                    .WriteLine("</pre>")
+                |> ignore
+    }
+
+    render.ObjectRenderers.Add preOnlyCodeBlockRenderer
+
 let private markdownPipeline =
     let pipe = MarkdownPipelineBuilder()
 
@@ -106,4 +124,5 @@ let convert rawMarkdown =
     use writer = new System.IO.StringWriter()
     let render = Renderers.HtmlRenderer writer
     render.ObjectRenderers.Add(RawTextRenderer())
+    preOnlyCodeBlockRenderer render
     render.Render(document).ToString()

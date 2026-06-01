@@ -71,10 +71,10 @@ let moveOutContentFromParagraph (markdownDocument: MarkdownDocument) =
     mapBlocks markdownDocument
 
 let preOnlyCodeBlockRenderer (render: Renderers.HtmlRenderer) =
-    render.ObjectRenderers.RemoveAll(function
+    render.ObjectRenderers.RemoveAll(System.Predicate(function
         | :? Renderers.Html.CodeBlockRenderer -> true
         | _ -> false
-    ) |> ignore
+    )) |> ignore
 
     let preOnlyCodeBlockRenderer = {
         new Renderers.Html.HtmlObjectRenderer<CodeBlock>() with
